@@ -19,8 +19,8 @@ export class ResponseInterceptor implements NestInterceptor {
         const statusCode = response.statusCode;
 
         return {
-          message: data.message ?? 'Success',
-          data: data.data ?? [],
+          message: data?.message ?? 'Success',
+          data: data?.data ?? [],
           statusCode,
         };
       }),
