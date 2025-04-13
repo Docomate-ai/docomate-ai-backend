@@ -1,6 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { RegisterAccountDto } from './dtos/register-account.dto';
 import { AuthService } from './auth.service';
+import { VerifyAccountDto } from './dtos/verify-account.dto';
+import { LoginAccountDto } from './dtos/login-account.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -13,5 +15,16 @@ export class AuthController {
       body.email,
       body.password,
     );
+  }
+
+  @Post('verify')
+  verifyAccount(@Body() body: VerifyAccountDto) {
+    return this.authService.verifyAccount(body.otp, body.email);
+  }
+
+  @Post('login')
+  @HttpCode(200)
+  loginAccount(@Body() body: LoginAccountDto) {
+    return this.authService.loginAndSendJwt(body.email, body.password);
   }
 }
