@@ -1,12 +1,28 @@
-import { Body, Controller, HttpCode, Post, Session } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Session,
+  UseGuards,
+} from '@nestjs/common';
 import { RegisterAccountDto } from './dtos/register-account.dto';
 import { AuthService } from './auth.service';
 import { VerifyAccountDto } from './dtos/verify-account.dto';
 import { LoginAccountDto } from './dtos/login-account.dto';
+import { AuthGuard } from 'src/guards/authorized.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @Get('whoami')
+  @UseGuards(AuthGuard)
+  async whoAmI(@Session() session: any) {
+    const userName = await this.authService.whoAmI(session.token);
+    return { message: `Hello, ${userName}` };
+  }
 
   @Post('register')
   async registerAccount(@Body() body: RegisterAccountDto) {

@@ -23,6 +23,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async whoAmI(token: string) {
+    const data = this.jwtService.verify(token);
+    const user = await this.usersService.findByMail(data.email);
+    return user?.name;
+  }
+
   async registerAccount(name: string, email: string, password: string) {
     try {
       // searching if users exist in Users collection
