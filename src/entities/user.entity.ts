@@ -1,4 +1,12 @@
-import { Entity, ObjectIdColumn, ObjectId, Column, Unique } from 'typeorm';
+import {
+  Entity,
+  ObjectIdColumn,
+  ObjectId,
+  Column,
+  Unique,
+  OneToMany,
+} from 'typeorm';
+import { Project } from './project.entity';
 
 @Entity()
 @Unique(['email'])
@@ -14,4 +22,7 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany(() => Project, (project) => project.user)
+  projects: Project[];
 }
