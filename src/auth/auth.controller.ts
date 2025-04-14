@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Session } from '@nestjs/common';
 import { RegisterAccountDto } from './dtos/register-account.dto';
 import { AuthService } from './auth.service';
 import { VerifyAccountDto } from './dtos/verify-account.dto';
@@ -9,22 +9,31 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
-  registerAccount(@Body() body: RegisterAccountDto) {
-    return this.authService.registerAccount(
+  async registerAccount(@Body() body: RegisterAccountDto) {
+    await this.authService.registerAccount(
       body.name,
       body.email,
       body.password,
     );
+
+    return { message: 'Mail has been sent to your email' };
   }
 
   @Post('verify')
-  verifyAccount(@Body() body: VerifyAccountDto) {
-    return this.authService.verifyAccount(body.otp, body.email);
+  async verifyAccount(@Body() body: VerifyAccountDto, @Session() session) {
+    const token = this.authService.verifyAccount(body.otp, body.email);
+    session.token = token;
+    return { message: 'Account has been created' };
   }
 
   @Post('login')
   @HttpCode(200)
-  loginAccount(@Body() body: LoginAccountDto) {
-    return this.authService.loginAndSendJwt(body.email, body.password);
+  async loginAccount(@Body() body: LoginAccountDto, @Session() session) {
+    const token = await this.authService.loginAndSendJwt(
+      body.email,
+      body.password,
+    );
+    session.token = token;
+    return { message: 'User logined successfully' };
   }
 }

@@ -61,8 +61,6 @@ export class AuthService {
       };
 
       this.emailService.sendEmail(sendMailData);
-
-      return { message: 'Mail has been sent to your email' };
     } catch (error) {
       console.error(
         `Error in authService: registerAccount: \n ${error.message}`,
@@ -109,7 +107,7 @@ export class AuthService {
         email: createdUser.email,
       });
 
-      return { message: 'Account has been created', data: { token } };
+      return token;
     } catch (err) {
       console.error(`Error verifying user: in Authservice - \n ${err.message}`);
       throw new InternalServerErrorException(err.message);
@@ -117,21 +115,26 @@ export class AuthService {
   }
 
   async loginAndSendJwt(email: string, password: string) {
-    const user = await this.usersService.findByMail(email);
-    if (!user) {
-      throw new NotFoundException('User does not exist');
+    try {
+      const user = await this.usersService.findByMail(email);
+      if (!user) {
+        throw new NotFoundException('User does not exist');
+      }
+
+      const comparePass = await bcrypt.compare(password, user.password);
+      if (!comparePass) {
+        throw new NotFoundException('User does not exist');
+      }
+
+      const token = this.jwtService.sign({
+        sub: user._id,
+        email: user.email,
+      });
+
+      return token;
+    } catch (error) {
+      console.error(`error in AuthService: loginAndSendJwt \n ${error}`);
+      throw new InternalServerErrorException(error.message);
     }
-
-    const comparePass = await bcrypt.compare(password, user.password);
-    if (!comparePass) {
-      throw new NotFoundException('User does not exist');
-    }
-
-    const token = this.jwtService.sign({
-      sub: user._id,
-      email: user.email,
-    });
-
-    return { message: 'User login successfully', data: { token } };
   }
 }
