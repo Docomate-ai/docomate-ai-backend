@@ -5,8 +5,10 @@ const cookieSession = require('cookie-session');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   // Interceptor to format outgoing responses
-  app.useGlobalInterceptors(new ResponseInterceptor());
+  // app.useGlobalInterceptors(new ResponseInterceptor());
+
   // cookie-session middleware
   app.use(
     cookieSession({
