@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
-import { User, TempUser } from '../entities';
+import { User, TempUser, Project } from '../entities';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { User, TempUser } from '../entities';
         url: configService.get<string>('MONGO_URI'),
         database: 'docomate-dev',
         synchronize: true,
-        entities: [User, TempUser],
+        entities: [User, TempUser, Project],
       }),
     }),
   ],
