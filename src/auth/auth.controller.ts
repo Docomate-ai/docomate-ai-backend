@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Post,
@@ -54,5 +55,13 @@ export class AuthController {
     );
     session.token = token;
     return { message: 'User logined successfully' };
+  }
+
+  @Delete('logout')
+  async logoutAccount(@Session() session: any) {
+    if (session.token) {
+      delete session.token;
+    }
+    return { message: 'successfully logout' };
   }
 }
