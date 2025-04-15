@@ -1,24 +1,35 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Project, User } from '../entities';
+import { Project } from '../entities';
 import { MongoRepository } from 'typeorm';
-import { UsersService } from 'src/users/users.service';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
-export class ProjectRepository {
+export class ProjectsRepository {
   constructor(
     @InjectRepository(Project)
     private projectRepo: MongoRepository<Project>,
-    private usersService: UsersService,
   ) {}
 
-  async getAllProjectsByUser(userMail: string) {
+  async getProjectById(_id: ObjectId, userId: ObjectId) {
     try {
-      // Find the user by email
-      const user = await this.usersService.findByMail(userMail);
+      const project = await this.projectRepo.findOne({
+        where: { _id, userId },
+      });
+      return project;
+    } catch (error) {
+      console.error(
+        `Error fetching projects at ProjectRepository: in getProjectById \n ${error}`,
+      );
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async getProjectByName(userId: string, projectName: string) {
+    try {
+      const user_id = new ObjectId(userId);
       const projects = await this.projectRepo.find({
-        // where: { user: user._id },
-        where: { user },
+        where: { userId: user_id, projectName },
       });
 
       return projects;
@@ -30,14 +41,38 @@ export class ProjectRepository {
     }
   }
 
-  async createProject(projectName: string, fileUrl: string, user: User) {
+  async getAllProjectsByUser(_id: ObjectId) {
+    try {
+      const projects = await this.projectRepo.find({
+        where: { userId: _id },
+      });
+
+      return projects;
+    } catch (error) {
+      console.error(
+        `Error fetching projects at ProjectRepository: in getAllProjectsByUser \n ${error}`,
+      );
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async createProject(
+    projectName: string,
+    repoUrl: string,
+    languages: Record<string, number>,
+    texts: any[],
+    embeddings: any[],
+    userId: string,
+  ) {
     try {
       const project = this.projectRepo.create({
         projectName,
-        fileUrl,
-        user,
+        repoUrl,
+        languages,
+        texts,
+        embeddings,
+        userId: new ObjectId(userId),
       });
-
       const res = await this.projectRepo.save(project);
       return res;
     } catch (error) {
@@ -70,7 +105,7 @@ export class ProjectRepository {
     }
   }
 
-  async deleteProject(_id: string) {
+  async deleteProject(_id: ObjectId) {
     try {
       const project = await this.projectRepo.delete(_id);
       return project;
