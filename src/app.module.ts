@@ -9,6 +9,7 @@ import { CommunicationsModule } from './communications/communications.module';
 import { AiModule } from './ai/ai.module';
 import { ProjectsModule } from './projects/projects.module';
 import { B2Module } from './b2/b2.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -23,6 +24,14 @@ import { B2Module } from './b2/b2.module';
     AiModule,
     ProjectsModule,
     B2Module,
+    JwtModule.registerAsync({
+      global: true,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '7d' },
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
