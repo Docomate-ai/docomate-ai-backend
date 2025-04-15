@@ -1,8 +1,17 @@
 import { ObjectId } from 'mongodb';
-import { Column, Entity, ManyToOne, ObjectIdColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  ObjectIdColumn,
+  RelationId,
+  Unique,
+} from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
+@Unique(['projectName'])
 export class Project {
   @ObjectIdColumn()
   _id: ObjectId;
@@ -11,14 +20,17 @@ export class Project {
   projectName: string;
 
   @Column()
-  fileUrl: string;
+  repoUrl: string;
+
+  @Column({ type: 'json' })
+  languages: Record<string, number>;
+
+  @Column({ type: 'json' })
+  texts: string[][];
+
+  @Column({ type: 'json' })
+  embeddings: number[][];
 
   @Column()
-  texts: [[string]];
-
-  @Column()
-  embeddings: [[number]];
-
-  @ManyToOne(() => User, (user) => user.projects, { onDelete: 'CASCADE' })
-  user: User;
+  userId: ObjectId;
 }
