@@ -22,7 +22,4 @@ export class User {
 
   @Column()
   password: string;
-
-  @OneToMany(() => Project, (project) => project.user)
-  projects: Project[];
 }
