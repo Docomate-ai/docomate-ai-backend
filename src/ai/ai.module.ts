@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { GroqService } from './groq.service';
-import { HuggingFaceService } from './huggingFace.service';
+import { EmbeddingsService } from './embeddings.service';
 
 @Module({
-  exports: [GroqService, HuggingFaceService],
-  providers: [GroqService, HuggingFaceService],
+  exports: [GroqService, EmbeddingsService],
+  providers: [GroqService, EmbeddingsService],
 })
 export class AiModule {}
