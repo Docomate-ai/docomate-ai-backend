@@ -42,7 +42,7 @@ export class EmbeddingsService {
 
   async splitData(data: string) {
     const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 2500,
+      chunkSize: 4500,
       chunkOverlap: 500,
     });
 
