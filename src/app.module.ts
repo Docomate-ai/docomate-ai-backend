@@ -10,6 +10,7 @@ import { AiModule } from './ai/ai.module';
 import { ProjectsModule } from './projects/projects.module';
 import { B2Module } from './b2/b2.module';
 import { JwtModule } from '@nestjs/jwt';
+import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { JwtModule } from '@nestjs/jwt';
         signOptions: { expiresIn: '7d' },
       }),
     }),
+    ContentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
