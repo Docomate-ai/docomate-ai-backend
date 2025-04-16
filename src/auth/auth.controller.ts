@@ -14,9 +14,7 @@ import { AuthService } from './auth.service';
 import { VerifyAccountDto } from './dtos/verify-account.dto';
 import { LoginAccountDto } from './dtos/login-account.dto';
 import { AuthGuard } from 'src/guards/authorized.guard';
-import { ResponseInterceptor } from 'src/interceptors/response.interceptor';
 
-@UseInterceptors(ResponseInterceptor)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
