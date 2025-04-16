@@ -5,13 +5,13 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { scrapeRepositoryToPlainText } from 'git-repo-parser/dist/scraper';
 import { EmbeddingsService } from 'src/ai/embeddings.service';
 import axios from 'axios';
 import { ProjectsRepository } from './projects.repository';
 import { UsersService } from 'src/users/users.service';
 import { getUsernameRepository } from './utils/retrieveNameRepo.util';
 import { ObjectId } from 'mongodb';
+import { scrapeRepositoryToPlainText } from './utils/git-scraper.util';
 
 @Injectable()
 export class ProjectsService {
@@ -105,7 +105,11 @@ export class ProjectsService {
       const [username, repository] = getUsernameRepository(repoUrl);
 
       // scrape the repository content
-      const textFile: string = await scrapeRepositoryToPlainText(repoUrl);
+      const textFile: string = await scrapeRepositoryToPlainText(repoUrl, [
+        '.git',
+        'public',
+        'node_modules',
+      ]);
       await this.EmbeddingService.generateEmbeddingsData(textFile);
 
       // create the embeddings
