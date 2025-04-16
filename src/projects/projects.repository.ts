@@ -116,4 +116,75 @@ export class ProjectsRepository {
       throw new InternalServerErrorException(error.message);
     }
   }
+
+  async similaritySearch(queryVector: number[], projectId: string) {
+    try {
+      // Fetch the specific project by its ID
+      const project = await this.projectRepo.findOne({
+        where: { _id: new ObjectId(projectId) },
+      });
+
+      if (!project) {
+        throw new InternalServerErrorException(
+          `Project with ID ${projectId} not found.`,
+        );
+      }
+
+      if (!project.embeddings || !project.texts) {
+        throw new InternalServerErrorException(
+          `Project with ID ${projectId} does not have embeddings or texts.`,
+        );
+      }
+
+      // Helper function to calculate cosine similarity
+      const calculateCosineSimilarity = (
+        vectorA: number[],
+        vectorB: number[],
+      ): number => {
+        const dotProduct = vectorA.reduce(
+          (sum, a, i) => sum + a * vectorB[i],
+          0,
+        );
+        const magnitudeA = Math.sqrt(
+          vectorA.reduce((sum, a) => sum + a * a, 0),
+        );
+        const magnitudeB = Math.sqrt(
+          vectorB.reduce((sum, b) => sum + b * b, 0),
+        );
+        return dotProduct / (magnitudeA * magnitudeB);
+      };
+
+      // Calculate similarity for all embeddings
+      const similarities = project.embeddings.map((embedding, index) => {
+        const similarity = calculateCosineSimilarity(queryVector, embedding);
+        return { similarity, index };
+      });
+
+      // Sort by similarity in descending order
+      similarities.sort((a, b) => b.similarity - a.similarity);
+
+      // Get the two most similar results
+      const topResults = similarities.slice(0, 2);
+
+      // Collect results with neighboring texts
+      const results = topResults.map((result) => {
+        const { index, similarity } = result;
+
+        return {
+          similarity,
+          matchedText: project.texts[index],
+          frontNeighbor: index > 0 ? project.texts[index - 1] : null, // Text before the match
+          backNeighbor:
+            index < project.texts.length - 1 ? project.texts[index + 1] : null, // Text after the match
+        };
+      });
+
+      return results;
+    } catch (error) {
+      console.error(
+        `Error performing similarity search at ProjectRepository: in similaritySearch \n ${error}`,
+      );
+      throw new InternalServerErrorException(error.message);
+    }
+  }
 }

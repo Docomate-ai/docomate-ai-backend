@@ -18,5 +18,6 @@ import { JwtService } from '@nestjs/jwt';
     TypeOrmModule.forFeature([Project]),
     AiModule,
   ],
+  exports: [ProjectsRepository],
 })
 export class ProjectsModule {}
