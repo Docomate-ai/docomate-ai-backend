@@ -13,6 +13,6 @@ export class AppService {
         'Docomate AI is a tool to create github readmes, documentation and to talk with open source github codebases.',
       initAt: this.initAt,
     };
-    return status;
+    return { data: status };
   }
 }
