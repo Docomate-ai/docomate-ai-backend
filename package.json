@@ -34,7 +34,6 @@
     "class-validator": "^0.14.1",
     "cookie-session": "^2.1.0",
     "cross-env": "^7.0.3",
-    "git-repo-parser": "^2.0.7",
     "groq-sdk": "^0.19.0",
     "langchain": "^0.3.21",
     "mongodb": "^6.15.0",
@@ -43,6 +42,7 @@
     "nodemailer-sendgrid-transport": "^0.2.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "simple-git": "^3.27.0",
     "typeorm": "^0.3.22"
   },
   "devDependencies": {
