@@ -39,7 +39,7 @@ export class AuthController {
 
   @Post('verify')
   async verifyAccount(@Body() body: VerifyAccountDto, @Session() session) {
-    const token = this.authService.verifyAccount(body.otp, body.email);
+    const token = await this.authService.verifyAccount(body.otp, body.email);
     session.token = token;
     return { message: 'Account has been created' };
   }
