@@ -8,7 +8,6 @@ import { DatabaseModule } from './database/database.module';
 import { CommunicationsModule } from './communications/communications.module';
 import { AiModule } from './ai/ai.module';
 import { ProjectsModule } from './projects/projects.module';
-import { B2Module } from './b2/b2.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ContentModule } from './content/content.module';
 
@@ -24,7 +23,7 @@ import { ContentModule } from './content/content.module';
     CommunicationsModule,
     AiModule,
     ProjectsModule,
-    B2Module,
+
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],
