@@ -27,6 +27,15 @@ export class UsersService {
     }
   }
 
+  async findById(userId: string) {
+    const id = new ObjectId(userId);
+    const user = this.userRepo.findOne({ where: { _id: id } });
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+    return user;
+  }
+
   async findByMail(email: string) {
     try {
       return await this.userRepo.findOne({ where: { email } });
@@ -48,21 +57,25 @@ export class UsersService {
   }
 
   async updateUserById(id: string, updatedUser: Partial<User>) {
+    const user = await this.userRepo.findOne({
+      where: { _id: new ObjectId(id) },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     try {
-      const user = await this.userRepo.findOne({
-        where: { _id: new ObjectId(id) },
-      });
-
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-
       if (updatedUser.name !== undefined) {
         user.name = updatedUser.name;
       }
 
       if (updatedUser.password !== undefined) {
         user.password = updatedUser.password;
+      }
+
+      if (updatedUser.urls !== undefined) {
+        user.urls = updatedUser.urls.filter((_, ind) => ind <= 4);
       }
 
       await this.userRepo.updateOne({ _id: new ObjectId(id) }, { $set: user });
