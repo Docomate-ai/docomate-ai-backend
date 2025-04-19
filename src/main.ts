@@ -1,7 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
-const cookieSession = require('cookie-session');
+import { ValidationPipe } from '@nestjs/common';
+import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,12 +10,28 @@ async function bootstrap() {
   // Interceptor to format outgoing responses
   app.useGlobalInterceptors(new ResponseInterceptor());
 
-  // cookie-session middleware
+  // Addind validation pipes
+  app.useGlobalPipes(new ValidationPipe());
+
   app.use(
-    cookieSession({
-      keys: [`gh#21dchgu567sc`],
+    session({
+      secret: 'gh#21dchgu567sc',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'lax',
+        secure: false, // true in production w/ HTTPS
+      },
     }),
   );
+
+  app.enableCors({
+    origin: ['http://localhost:5173'],
+    credentials: true,
+  });
+
   await app.listen(process.env.PORT ?? 8080);
 }
 bootstrap();
