@@ -12,6 +12,7 @@ import * as bcrypt from 'bcryptjs';
 import { EmailService } from 'src/communications/email/email.service';
 import { otpMailTemplate } from './templates/otpHtml.temp';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,7 @@ export class AuthService {
     private usersService: UsersService,
     private emailService: EmailService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async whoAmI(token: string) {
@@ -108,10 +110,13 @@ export class AuthService {
       const createdUser = await this.usersService.createUser(user);
 
       // Create JWT token with user id and email
-      const token = this.jwtService.sign({
-        sub: createdUser._id,
-        email: createdUser.email,
-      });
+      const token = this.jwtService.sign(
+        {
+          sub: createdUser._id,
+          email: createdUser.email,
+        },
+        { secret: this.configService.get('JWT_SECRET') },
+      );
 
       return token;
     } catch (err) {
@@ -132,10 +137,13 @@ export class AuthService {
         throw new NotFoundException('User does not exist');
       }
 
-      const token = this.jwtService.sign({
-        sub: user._id,
-        email: user.email,
-      });
+      const token = this.jwtService.sign(
+        {
+          sub: user._id,
+          email: user.email,
+        },
+        { secret: this.configService.get('JWT_SECRET') },
+      );
 
       return token;
     } catch (error) {
