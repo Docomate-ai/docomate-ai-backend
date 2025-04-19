@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Project } from '../entities';
+import { Content, Project } from '../entities';
 import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 
@@ -9,6 +9,8 @@ export class ProjectsRepository {
   constructor(
     @InjectRepository(Project)
     private projectRepo: MongoRepository<Project>,
+    @InjectRepository(Content)
+    private contentRepo: MongoRepository<Content>,
   ) {}
 
   async getProjectById(_id: ObjectId, userId: ObjectId) {
@@ -107,6 +109,7 @@ export class ProjectsRepository {
 
   async deleteProject(_id: ObjectId) {
     try {
+      await this.contentRepo.delete({ projectId: _id });
       const project = await this.projectRepo.delete(_id);
       return project;
     } catch (error) {
@@ -164,7 +167,7 @@ export class ProjectsRepository {
       similarities.sort((a, b) => b.similarity - a.similarity);
 
       // Get the two most similar results
-      const topResults = similarities.slice(0, 2);
+      const topResults = similarities.slice(0, 3);
 
       // Collect results with neighboring texts
       const results = topResults.map((result) => {
