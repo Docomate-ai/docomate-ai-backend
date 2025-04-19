@@ -1,98 +1,166 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+<p style="display:flex; justify-content: center;">
+  <img src="https://avatars.githubusercontent.com/u/207241261?s=200&v=4" style="border-radius: 1rem; border: 1px solid #fff;"/>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<div align="center">
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
+![TypeORM](https://img.shields.io/badge/TypeORM-FE0803.svg?style=for-the-badge&logo=typeorm&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+![RxJS](https://img.shields.io/badge/rxjs-%23B7178C.svg?style=for-the-badge&logo=reactivex&logoColor=white)
 
-## Description
+</div>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# DocomateAI Backend
 
-## Project setup
+This is the backend for **DocomateAI**, an AI-based documentation generator and code exploration assistant. It handles user authentication, project/content management, README generation, and AI-powered chat with your codebase.
 
-```bash
-$ npm install
-```
+> 📌 For the complete project including frontend and updates, visit our [GitHub organization](https://github.com/docomate-ai)
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## Table of Contents
 
-# watch mode
-$ npm run start:dev
+- [DocomateAI Backend](#docomateai-backend)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+    - [Requirements:](#requirements)
+    - [Local Installation](#local-installation)
+  - [Tech stack](#tech-stack)
+  - [API Endpoints](#api-endpoints)
+    - [APP (/)](#app-)
+    - [Auth](#auth)
+    - [Projects](#projects)
+    - [Contents](#contents)
+  - [Author](#author)
 
-# production mode
-$ npm run start:prod
-```
+---
 
-## Run tests
+## Installation
 
-```bash
-# unit tests
-$ npm run test
+### Requirements:
 
-# e2e tests
-$ npm run test:e2e
+- Node JS, Nest JS and Typescript.
+- API KEYS
 
-# test coverage
-$ npm run test:cov
-```
+  |  **API Credentials**  |                              **Website**                              |
+  | :-------------------: | :-------------------------------------------------------------------: |
+  |  MongoDb Credentials  |         [MongoDb Atlas](https://www.mongodb.com/cloud/atlas/)         |
+  | SendGrid Credentials  |          [Sendgrid Mail Service](https://sendgrid.com/en-us)          |
+  | BackBlaze Credentials | [BackBlaze B2 Cloud Storage](https://www.backblaze.com/cloud-storage) |
+  |   HuggingFace Token   | [HuggingFace settings tokens](https://huggingface.co/settings/tokens) |
+  |  Jina Embeddingd API  |        [Jina v2 Embedding Modal](https://jina.ai/embeddings/)         |
+  |       Groq API        |             [Groq Console](https://console.groq.com/keys)             |
 
-## Deployment
+- To configure environment variables, navigate to the backend directory and copy .env.development.sample to .env.development. Then, paste your API keys from the above links.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Local Installation
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+1. **Clone the repository**
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+   ```
+   git clone https://github.com/Docomate-ai/docomate-ai-backend.git
+   cd docomate-ai-backend
+   ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+2. **Install dependencies**
 
-## Resources
+   ```
+   npm install
+   ```
 
-Check out a few resources that may come in handy when working with NestJS:
+3. **Set up environment variables**
+   Create a `.env.development` file in the root directory. Refer to `.env.development.sample` for structure.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+4. **Start the server**
+   ```
+   npm run start:dev
+   ```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Tech stack
 
-## Stay in touch
+|   **Technology**    |                **Tools**                |
+| :-----------------: | :-------------------------------------: |
+| Server-side Runtime |                 Node.js                 |
+|    Web Framework    |         Nest.js with Typescript         |
+|      Database       |            MongoDB, TypeORM             |
+|   Authentication    |              JWT, Bcryptjs              |
+|  AI-based Features  | Groq-sdk, Langchain.js, Jina embeddings |
+|     API Testing     |                 Postman                 |
+|     Deployment      |                 Heroku                  |
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## API Endpoints
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### APP (/)
+
+- **GET** `/app` – Initial app endpoint (e.g., status or chat interface)  
+  _Response_: `{ message: "Welcome to DocomateAI Backend" }`
+
+### Auth
+
+- **POST** `/register` – Register a new user  
+  _Body_: `{ name, email, password }`  
+  _Response_: `{ token, user }`
+
+- **POST** `/verify-user` – Verify an existing user’s session or email  
+  _Body_: `{ email, otp }`  
+  _Response_: `{ verified: true/false }`
+
+- **POST** `/login` – Log in user  
+  _Body_: `{ email, password }`  
+  _Response_: `{ token, user }`
+
+- **GET** `/whoami` – Get current logged-in user  
+  _Headers_: `Authorization: Bearer <token>`  
+  _Response_: `{ user }`
+
+- **DELETE** `/logout` – Log out user  
+  _Headers_: `Authorization: Bearer <token>`  
+  _Response_: `{ success: true }`
+
+### Projects
+
+- **POST** `/get-all-projects` – Fetch all projects for the logged-in user  
+  _Response_: `[ { id, name, createdAt } ]`
+
+- **POST** `/create-project` – Create a new project  
+  _Body_: `{ name, files }`  
+  _Response_: `{ success, project }`
+
+- **DELETE** `/delete-project` – Delete a project by ID  
+  _Body_: `{ projectId }`  
+  _Response_: `{ deleted: true }`
+
+- **POST** `/get-project` – Get details of a specific project  
+  _Body_: `{ projectId }`  
+  _Response_: `{ project }`
+
+### Contents
+
+- **GET** `/get-sections` – Get available sections in a project  
+  _Query_: `?projectId=123`  
+  _Response_: `[ { title, summary } ]`
+
+- **POST** `/generate-readme` – Generate a README using AI  
+  _Body_: `{ projectId, focusAreas }`  
+  _Response_: `{ readme: "..." }`
+
+---
+
+## Author
+
+**Gitanshu Sankhla**
+
+- GitHub: [Gitax18](https://github.com/Gitax18)
+- Docomate-AI Org: [DocomateAI](https://github.com/docomate-ai)
+
+---
+
+Feel free to contribute, raise issues, or suggest improvements!
