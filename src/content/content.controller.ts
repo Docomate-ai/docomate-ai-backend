@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
+  Put,
+  Res,
   Session,
   UseGuards,
 } from '@nestjs/common';
@@ -11,6 +14,9 @@ import { AuthGuard } from 'src/guards/authorized.guard';
 import { GenerateReadmeDto } from './dtos/generate-readme.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ContentService } from './content.service';
+import { SaveContentDto } from './dtos/save-content.dto';
+import { ObjectId } from 'mongodb';
+import { Response } from 'express';
 
 @Controller('content')
 @UseGuards(AuthGuard)
@@ -25,6 +31,15 @@ export class ContentController {
     return this.contentService.getReadmeSections();
   }
 
+  @Post(':projectId/contents')
+  async getAllContents(
+    @Param('projectId') projectId: string,
+    @Session() session,
+  ) {
+    const { sub } = this.jwtService.verify(session.token);
+    return this.contentService.getAllContents(projectId, sub);
+  }
+
   @Post(':projectId/generate-readme')
   async generateReadme(
     @Param('projectId') projectId: string,
@@ -34,10 +49,55 @@ export class ContentController {
     const { email: userMail, sub: userId } = this.jwtService.verify(
       session.token,
     );
+    console.log(`POST ${projectId}/generate-read By ${userMail}`);
     return this.contentService.generateReadme(
       projectId,
       userMail,
       body.sections,
     );
+  }
+
+  @Put(':projectId/save')
+  async saveContent(
+    @Param('projectId') projectId: string,
+    @Body() body: SaveContentDto,
+    @Session() session,
+  ) {
+    const { sub } = this.jwtService.verify(session.token);
+    await this.contentService.saveContent(
+      projectId,
+      sub,
+      body.contentName,
+      body.contentType,
+      body.content,
+    );
+  }
+
+  @Post(':contentId/download')
+  async downloadContent(
+    @Param('contentId') contentId: string,
+    @Res() res: Response,
+  ) {
+    return this.contentService.downloadContent(contentId, res);
+  }
+
+  @Delete(':contentId')
+  async deleteById(@Param('contentId') contentId: string) {
+    await this.contentService.deleteContentById(contentId);
+  }
+
+  @Post(':projectId/content/:contentId')
+  async getContentByProject(
+    @Session() session,
+    @Param('projectId') projectId: string,
+    @Param('contentId') contentId: string,
+  ) {
+    const { sub } = this.jwtService.verify(session.token);
+    const { data } = await this.contentService.getAllContents(projectId, sub);
+    const content = data.contents.filter(
+      (content) => String(content._id) === contentId,
+    );
+
+    return { data: content };
   }
 }

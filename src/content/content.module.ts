@@ -3,13 +3,19 @@ import { ContentService } from './content.service';
 import { ContentController } from './content.controller';
 import { AiModule } from 'src/ai/ai.module';
 import { ProjectsModule } from 'src/projects/projects.module';
-import { B2Module } from 'src/b2/b2.module';
 import { UsersModule } from 'src/users/users.module';
-import { ProjectsRepository } from 'src/projects/projects.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Content } from 'src/entities';
+import { ContentRepository } from './content.repository';
 
 @Module({
-  providers: [ContentService],
+  providers: [ContentService, ContentRepository],
   controllers: [ContentController],
-  imports: [AiModule, ProjectsModule, B2Module, UsersModule],
+  imports: [
+    AiModule,
+    ProjectsModule,
+    UsersModule,
+    TypeOrmModule.forFeature([Content]),
+  ],
 })
 export class ContentModule {}
