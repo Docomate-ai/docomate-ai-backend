@@ -10,6 +10,7 @@ import { AiModule } from './ai/ai.module';
 import { ProjectsModule } from './projects/projects.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ContentModule } from './content/content.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ContentModule } from './content/content.module';
       }),
     }),
     ContentModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
