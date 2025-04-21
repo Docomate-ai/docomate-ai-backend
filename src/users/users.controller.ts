@@ -14,10 +14,11 @@ export class UsersController {
   async getUserById(@Session() session) {
     const { sub } = this.jwtService.verify(session.token);
     const user = await this.userService.findById(sub);
+    const urls = user?.urls.map((url) => ({ value: url }));
     const obj = {
       name: user?.name,
       email: user?.email,
-      urls: user?.urls,
+      urls,
     };
     return { data: { user: obj } };
   }
