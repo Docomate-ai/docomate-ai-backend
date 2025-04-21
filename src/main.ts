@@ -21,17 +21,20 @@ async function bootstrap() {
       cookie: {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: 'lax',
-        secure: false, // true in production w/ HTTPS
+        sameSite: 'none',
+        secure: true, // true in production w/ HTTPS
       },
     }),
   );
 
   app.enableCors({
-    origin: ['http://localhost:5173'],
+    origin: [
+      'http://localhost:5173',
+      'https://docomate-ai.github.io/docomate-ai-frontend/',
+    ],
     credentials: true,
   });
 
-  await app.listen(process.env.PORT ?? 8080);
+  await app.listen(process.env.PORT ?? 7070);
 }
 bootstrap();
