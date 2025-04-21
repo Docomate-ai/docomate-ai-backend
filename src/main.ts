@@ -30,7 +30,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:5173',
-      'https://docomate-ai.github.io/docomate-ai-frontend/',
+      'https://docomate-ai.github.io/docomate-ai-frontend',
     ],
     credentials: true,
   });
