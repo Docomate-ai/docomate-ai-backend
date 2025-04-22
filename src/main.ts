@@ -21,8 +21,8 @@ async function bootstrap() {
       cookie: {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: 'lax',
-        secure: false, // true in production w/ HTTPS
+        sameSite: 'none',
+        secure: true,
       },
     }),
   );
@@ -40,6 +40,9 @@ async function bootstrap() {
       const allowedOrigins = [
         'http://localhost:5173',
         'https://docomate-ai.github.io',
+        'https://docomate-ai.github.io/docomate-ai-frontend',
+        'docomate-ai.github.io/docomate-ai-frontend',
+        'docomate-ai.github.io',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
