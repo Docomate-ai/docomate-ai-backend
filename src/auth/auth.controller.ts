@@ -5,15 +5,16 @@ import {
   Get,
   HttpCode,
   Post,
+  Res,
   Session,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { RegisterAccountDto } from './dtos/register-account.dto';
 import { AuthService } from './auth.service';
 import { VerifyAccountDto } from './dtos/verify-account.dto';
 import { LoginAccountDto } from './dtos/login-account.dto';
 import { AuthGuard } from 'src/guards/authorized.guard';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -38,21 +39,41 @@ export class AuthController {
   }
 
   @Post('verify')
-  async verifyAccount(@Body() body: VerifyAccountDto, @Session() session) {
+  async verifyAccount(
+    @Body() body: VerifyAccountDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const token = await this.authService.verifyAccount(body.otp, body.email);
-    session.token = token;
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
     return { message: 'Account has been created' };
   }
 
   @Post('login')
   @HttpCode(200)
-  async loginAccount(@Body() body: LoginAccountDto, @Session() session) {
+  async loginAccount(
+    @Body() body: LoginAccountDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const token = await this.authService.loginAndSendJwt(
       body.email,
       body.password,
     );
-    session.token = token;
-    return { message: 'User logined successfully' };
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return { message: 'User logged in successfully' };
   }
 
   @Delete('logout')
