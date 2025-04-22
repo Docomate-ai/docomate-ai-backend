@@ -78,7 +78,12 @@ export class AuthController {
 
   @Delete('logout')
   async logoutAccount(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('token');
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    });
     return { message: 'Successfully logged out' };
   }
 }
