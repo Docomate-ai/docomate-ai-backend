@@ -1,4 +1,4 @@
-<p style="display:flex; justify-content: center;">
+<p align="center">
   <img src="https://avatars.githubusercontent.com/u/207241261?s=200&v=4" style="border-radius: 1rem; border: 1px solid #fff;"/>
 </p>
 
@@ -30,11 +30,6 @@ This is the backend for **DocomateAI**, an AI-based documentation generator and 
     - [Requirements:](#requirements)
     - [Local Installation](#local-installation)
   - [Tech stack](#tech-stack)
-  - [API Endpoints](#api-endpoints)
-    - [APP (/)](#app-)
-    - [Auth](#auth)
-    - [Projects](#projects)
-    - [Contents](#contents)
   - [Author](#author)
 
 ---
@@ -46,14 +41,12 @@ This is the backend for **DocomateAI**, an AI-based documentation generator and 
 - Node JS, Nest JS and Typescript.
 - API KEYS
 
-  |  **API Credentials**  |                              **Website**                              |
-  | :-------------------: | :-------------------------------------------------------------------: |
-  |  MongoDb Credentials  |         [MongoDb Atlas](https://www.mongodb.com/cloud/atlas/)         |
-  | SendGrid Credentials  |          [Sendgrid Mail Service](https://sendgrid.com/en-us)          |
-  | BackBlaze Credentials | [BackBlaze B2 Cloud Storage](https://www.backblaze.com/cloud-storage) |
-  |   HuggingFace Token   | [HuggingFace settings tokens](https://huggingface.co/settings/tokens) |
-  |  Jina Embeddingd API  |        [Jina v2 Embedding Modal](https://jina.ai/embeddings/)         |
-  |       Groq API        |             [Groq Console](https://console.groq.com/keys)             |
+  | **API Credentials**  |                      **Website**                       |
+  | :------------------: | :----------------------------------------------------: |
+  | MongoDb Credentials  | [MongoDb Atlas](https://www.mongodb.com/cloud/atlas/)  |
+  | SendGrid Credentials |  [Sendgrid Mail Service](https://sendgrid.com/en-us)   |
+  | Jina Embeddingd API  | [Jina v2 Embedding Modal](https://jina.ai/embeddings/) |
+  |       Groq API       |     [Groq Console](https://console.groq.com/keys)      |
 
 - To configure environment variables, navigate to the backend directory and copy .env.development.sample to .env.development. Then, paste your API keys from the above links.
 
@@ -93,64 +86,6 @@ This is the backend for **DocomateAI**, an AI-based documentation generator and 
 |  AI-based Features  | Groq-sdk, Langchain.js, Jina embeddings |
 |     API Testing     |                 Postman                 |
 |     Deployment      |                 Heroku                  |
-
----
-
-## API Endpoints
-
-### APP (/)
-
-- **GET** `/app` – Initial app endpoint (e.g., status or chat interface)  
-  _Response_: `{ message: "Welcome to DocomateAI Backend" }`
-
-### Auth
-
-- **POST** `/register` – Register a new user  
-  _Body_: `{ name, email, password }`  
-  _Response_: `{ token, user }`
-
-- **POST** `/verify-user` – Verify an existing user’s session or email  
-  _Body_: `{ email, otp }`  
-  _Response_: `{ verified: true/false }`
-
-- **POST** `/login` – Log in user  
-  _Body_: `{ email, password }`  
-  _Response_: `{ token, user }`
-
-- **GET** `/whoami` – Get current logged-in user  
-  _Headers_: `Authorization: Bearer <token>`  
-  _Response_: `{ user }`
-
-- **DELETE** `/logout` – Log out user  
-  _Headers_: `Authorization: Bearer <token>`  
-  _Response_: `{ success: true }`
-
-### Projects
-
-- **POST** `/get-all-projects` – Fetch all projects for the logged-in user  
-  _Response_: `[ { id, name, createdAt } ]`
-
-- **POST** `/create-project` – Create a new project  
-  _Body_: `{ name, files }`  
-  _Response_: `{ success, project }`
-
-- **DELETE** `/delete-project` – Delete a project by ID  
-  _Body_: `{ projectId }`  
-  _Response_: `{ deleted: true }`
-
-- **POST** `/get-project` – Get details of a specific project  
-  _Body_: `{ projectId }`  
-  _Response_: `{ project }`
-
-### Contents
-
-- **GET** `/get-sections` – Get available sections in a project  
-  _Query_: `?projectId=123`  
-  _Response_: `[ { title, summary } ]`
-
-- **POST** `/generate-readme` – Generate a README using AI  
-  _Body_: `{ projectId, focusAreas }`  
-  _Response_: `{ readme: "..." }`
 
 ---
 
