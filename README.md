@@ -26,11 +26,18 @@ This is the backend for **DocomateAI**, an AI-based documentation generator and 
 
 - [DocomateAI Backend](#docomateai-backend)
   - [Table of Contents](#table-of-contents)
+  - [Backend Architecture](#backend-architecture)
   - [Installation](#installation)
     - [Requirements:](#requirements)
     - [Local Installation](#local-installation)
   - [Tech stack](#tech-stack)
   - [Author](#author)
+
+---
+
+## Backend Architecture
+
+![Backend Architecture](https://res.cloudinary.com/dodtu65mt/image/upload/v1745340048/backend_architecture_drwczo.png)
 
 ---
 
