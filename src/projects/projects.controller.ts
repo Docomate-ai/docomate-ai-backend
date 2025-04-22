@@ -4,7 +4,7 @@ import {
   Delete,
   Param,
   Post,
-  Session,
+  Req,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
@@ -14,6 +14,7 @@ import { ValidateRepoPipe } from './pipes/validateRepoUrl.pipe';
 import { ProjectsService } from './projects.service';
 import { JwtService } from '@nestjs/jwt';
 import { DeleteProjectDto } from './dtos/delete-project.dto';
+import { Request } from 'express';
 
 @UseGuards(AuthGuard)
 @Controller('project')
@@ -24,15 +25,17 @@ export class ProjectsController {
   ) {}
 
   @Post('projects')
-  async getAllProjects(@Session() session: any) {
-    const { email } = this.jwtService.verify(session.token);
+  async getAllProjects(@Req() req: Request) {
+    const token = req.cookies?.token;
+    const { email } = this.jwtService.verify(token);
     return this.projectsService.getAllProject(email);
   }
 
   @Post()
   @UsePipes(ValidateRepoPipe)
-  async addProject(@Body() body: AddProjectDto, @Session() session: any) {
-    const { email, sub: userId } = this.jwtService.verify(session.token);
+  async addProject(@Body() body: AddProjectDto, @Req() req: Request) {
+    const token = req.cookies?.token;
+    const { email, sub: userId } = this.jwtService.verify(token);
     return this.projectsService.addProject(
       body.repoUrl,
       body.projectName,
@@ -42,14 +45,16 @@ export class ProjectsController {
   }
 
   @Delete()
-  async deleteProject(@Body() body: DeleteProjectDto, @Session() session: any) {
-    const { sub: userId } = this.jwtService.verify(session.token);
+  async deleteProject(@Body() body: DeleteProjectDto, @Req() req: Request) {
+    const token = req.cookies?.token;
+    const { sub: userId } = this.jwtService.verify(token);
     return this.projectsService.deleteProject(body.projectName, userId);
   }
 
   @Post(':id')
-  getProject(@Param('id') projectId: string, @Session() session: any) {
-    const { sub: userId } = this.jwtService.verify(session.token);
+  getProject(@Param('id') projectId: string, @Req() req: Request) {
+    const token = req.cookies?.token;
+    const { sub: userId } = this.jwtService.verify(token);
     return this.projectsService.getProjectById(projectId, userId);
   }
 }

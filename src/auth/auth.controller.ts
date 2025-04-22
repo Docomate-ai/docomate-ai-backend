@@ -5,8 +5,8 @@ import {
   Get,
   HttpCode,
   Post,
+  Req,
   Res,
-  Session,
   UseGuards,
 } from '@nestjs/common';
 import { RegisterAccountDto } from './dtos/register-account.dto';
@@ -14,7 +14,7 @@ import { AuthService } from './auth.service';
 import { VerifyAccountDto } from './dtos/verify-account.dto';
 import { LoginAccountDto } from './dtos/login-account.dto';
 import { AuthGuard } from 'src/guards/authorized.guard';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -22,8 +22,9 @@ export class AuthController {
 
   @Get('whoami')
   @UseGuards(AuthGuard)
-  async whoAmI(@Session() session: any) {
-    const userName = await this.authService.whoAmI(session.token);
+  async whoAmI(@Req() req: Request) {
+    const token = req.cookies?.token;
+    const userName = await this.authService.whoAmI(token);
     return { message: `Hello, ${userName}` };
   }
 
@@ -34,7 +35,6 @@ export class AuthController {
       body.email,
       body.password,
     );
-
     return { message: 'Mail has been sent to your email' };
   }
 
@@ -49,7 +49,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
     return { message: 'Account has been created' };
@@ -70,17 +70,15 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
     return { message: 'User logged in successfully' };
   }
 
   @Delete('logout')
-  async logoutAccount(@Session() session: any) {
-    if (session.token) {
-      delete session.token;
-    }
-    return { message: 'successfully logout' };
+  async logoutAccount(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('token');
+    return { message: 'Successfully logged out' };
   }
 }
