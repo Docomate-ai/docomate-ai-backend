@@ -1,19 +1,23 @@
 // users.service.ts
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
-import { User } from '../entities';
+import { Project, User } from '../entities';
 import { ObjectId } from 'mongodb';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepo: MongoRepository<User>,
+    @InjectRepository(Project)
+    private projectRepo: MongoRepository<Project>,
   ) {}
 
   async createUser(userData: Partial<User>) {
@@ -48,6 +52,8 @@ export class UsersService {
 
   async deleteByMail(email: string) {
     try {
+      const user = await this.findByMail(email);
+      await this.projectRepo.delete({ userId: user?._id });
       await this.userRepo.delete({ email });
     } catch (error) {
       throw new InternalServerErrorException(
@@ -74,15 +80,38 @@ export class UsersService {
         user.password = updatedUser.password;
       }
 
-      if (updatedUser.urls !== undefined) {
+      if (updatedUser.urls) {
         user.urls = updatedUser.urls.filter((_, ind) => ind <= 4);
       }
 
       await this.userRepo.updateOne({ _id: new ObjectId(id) }, { $set: user });
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException(
         'Error updating User by id: at userService',
       );
     }
+  }
+
+  async changePassword(
+    id: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const comparison = await bcrypt.compare(currentPassword, user?.password);
+    console.log(comparison);
+    if (!comparison) {
+      throw new BadRequestException('Current Password does not match');
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(newPassword, salt);
+    user.password = hashedPass;
+    console.log(user);
+    return this.updateUserById(id, user);
   }
 }
