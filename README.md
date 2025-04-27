@@ -37,7 +37,7 @@ This is the backend for **DocomateAI**, an AI-based documentation generator and 
 
 ## Backend Architecture
 
-![Backend Architecture](https://res.cloudinary.com/dodtu65mt/image/upload/v1745340048/backend_architecture_drwczo.png)
+![Backend Architecture](https://res.cloudinary.com/dodtu65mt/image/upload/v1745505741/docomate_ai_ih24or.png)
 
 ---
 
