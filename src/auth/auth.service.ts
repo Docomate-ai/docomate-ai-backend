@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { createCipheriv, createDecipheriv } from 'crypto';
 import { TempUser } from '../entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
@@ -28,10 +29,43 @@ export class AuthService {
   async whoAmI(token: string) {
     const data = this.jwtService.verify(token);
     const user = await this.usersService.findByMail(data.email);
-    return user?.name;
+    if (!user) {
+      return new NotFoundException('User does not exist');
+    }
+    // secrets to decrypt api keys
+    const algorithm = this.configService.get<string>('CRYPTO_ALGORITHM');
+    const secretKeyString = this.configService.get<string>('CRYPTO_SECRET_KEY');
+    const ivString = this.configService.get<string>('CRYPTO_IV');
+    if (!algorithm || !secretKeyString || !ivString) {
+      throw new InternalServerErrorException(
+        'Encryption configuration is missing',
+      );
+    }
+    const secretKey = Buffer.from(secretKeyString, 'hex');
+    const iv = Buffer.from(ivString, 'hex');
+    const decipherGroq = createDecipheriv(algorithm, secretKey, iv);
+    let decryptedGroqAPI =
+      decipherGroq.update(user.groqApi, 'hex', 'utf8') +
+      decipherGroq.final('utf8');
+    const decipherJina = createDecipheriv(algorithm, secretKey, iv);
+    let decryptedJinaAPI =
+      decipherJina.update(user.jinaApi, 'hex', 'utf8') +
+      decipherJina.final('utf8');
+
+    return {
+      name: user.name,
+      groqApi: decryptedGroqAPI,
+      jinaApi: decryptedJinaAPI,
+    };
   }
 
-  async registerAccount(name: string, email: string, password: string) {
+  async registerAccount(
+    name: string,
+    email: string,
+    password: string,
+    groqApi: string,
+    jinaApi: string,
+  ) {
     try {
       // searching if users exist in Users collection
       const user = await this.usersService.findByMail(email);
@@ -48,11 +82,31 @@ export class AuthService {
       // salt and hash password
       const salt = await bcrypt.genSalt(10);
       const hashPass = await bcrypt.hash(password, salt);
+      // Encrypt the APIs
+      const algorithm = this.configService.get<string>('CRYPTO_ALGORITHM');
+      const secretKeyString =
+        this.configService.get<string>('CRYPTO_SECRET_KEY');
+      const ivString = this.configService.get<string>('CRYPTO_IV');
+      if (!algorithm || !secretKeyString || !ivString) {
+        throw new InternalServerErrorException(
+          'Encryption configuration is missing',
+        );
+      }
+      const secretKey = Buffer.from(secretKeyString, 'hex');
+      const iv = Buffer.from(ivString, 'hex');
+      const cipherGroq = createCipheriv(algorithm, secretKey, iv);
+      const encryptGroqApi =
+        cipherGroq.update(groqApi, 'utf8', 'hex') + cipherGroq.final('hex');
+      const cipherJina = createCipheriv(algorithm, secretKey, iv);
+      const encryptJinaApi =
+        cipherJina.update(jinaApi, 'utf8', 'hex') + cipherJina.final('hex');
       // creating user data
       const newUser = this.tempUserRepo.create({
         name: name,
         email: email,
         password: hashPass,
+        groqApi: encryptGroqApi,
+        jinaApi: encryptJinaApi,
         otp: otp,
         otpExpires: otpExpires,
       });
@@ -104,6 +158,8 @@ export class AuthService {
         name: tempUser.name,
         email: tempUser.email,
         password: tempUser.password,
+        groqApi: tempUser.groqApi,
+        jinaApi: tempUser.jinaApi,
       };
 
       await this.tempUserRepo.deleteMany({ email });

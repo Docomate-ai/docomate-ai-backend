@@ -14,6 +14,12 @@ export class TempUser {
   @Column({ type: 'string', nullable: false })
   password: string;
 
+  @Column({ type: 'string', nullable: false })
+  groqApi: string;
+
+  @Column({ type: 'string', nullable: false })
+  jinaApi: string;
+
   @Column({ type: 'number', nullable: false })
   otp: number;
 

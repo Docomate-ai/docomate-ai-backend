@@ -9,4 +9,10 @@ export class RegisterAccountDto {
 
   @IsString()
   password: string;
+
+  @IsString()
+  groqApi: string;
+
+  @IsString()
+  jinaApi: string;
 }

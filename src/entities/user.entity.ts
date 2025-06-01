@@ -20,6 +20,12 @@ export class User {
   @Column()
   email: string;
 
+  @Column({ type: 'string', nullable: false })
+  groqApi: string;
+
+  @Column({ type: 'string', nullable: false })
+  jinaApi: string;
+
   @Column()
   urls: string[];
 

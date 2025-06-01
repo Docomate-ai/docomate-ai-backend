@@ -24,8 +24,8 @@ export class AuthController {
   @UseGuards(AuthGuard)
   async whoAmI(@Req() req: Request) {
     const token = req.cookies?.token;
-    const userName = await this.authService.whoAmI(token);
-    return { message: `Hello, ${userName}` };
+    const data = await this.authService.whoAmI(token);
+    return { data };
   }
 
   @Post('register')
@@ -34,6 +34,8 @@ export class AuthController {
       body.name,
       body.email,
       body.password,
+      body.groqApi,
+      body.jinaApi,
     );
     return { message: 'Mail has been sent to your email' };
   }
