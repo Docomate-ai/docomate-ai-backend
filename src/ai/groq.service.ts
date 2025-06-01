@@ -7,7 +7,12 @@ import { ChatCompletionMessageParam } from 'groq-sdk/resources/chat/completions'
 export class GroqService {
   constructor(private configService: ConfigService) {}
 
-  async generateWithContext(system: string, context: string, prompt: string) {
+  async generateWithContext(
+    system: string,
+    context: string,
+    prompt: string,
+    groqApi: string,
+  ) {
     try {
       const messages: ChatCompletionMessageParam[] = [
         { role: 'system', content: system },
@@ -18,11 +23,11 @@ export class GroqService {
       ];
 
       const client = new Groq({
-        apiKey: this.configService.get('GROQ_API'),
+        apiKey: groqApi,
       });
 
       const res = await client.chat.completions.create({
-        model: 'llama3-70b-8192',
+        model: 'llama-3.3-70b-versatile',
         messages,
       });
 

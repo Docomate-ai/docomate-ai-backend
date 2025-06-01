@@ -5,6 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { createDecipheriv } from 'crypto';
 import { EmbeddingsService } from 'src/ai/embeddings.service';
 import axios from 'axios';
 import { ProjectsRepository } from './projects.repository';
@@ -12,6 +13,7 @@ import { UsersService } from 'src/users/users.service';
 import { getUsernameRepository } from './utils/retrieveNameRepo.util';
 import { ObjectId } from 'mongodb';
 import { scrapeRepositoryToPlainText } from './utils/git-scraper.util';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProjectsService {
@@ -19,6 +21,7 @@ export class ProjectsService {
     private EmbeddingService: EmbeddingsService,
     private projectRepo: ProjectsRepository,
     private usersService: UsersService,
+    private configService: ConfigService,
   ) {}
 
   async getAllProject(userMail: string) {
@@ -90,6 +93,26 @@ export class ProjectsService {
     }
 
     try {
+      // secrets to decrypt api keys
+      const algorithm = this.configService.get<string>('CRYPTO_ALGORITHM');
+      const secretKeyString =
+        this.configService.get<string>('CRYPTO_SECRET_KEY');
+      const ivString = this.configService.get<string>('CRYPTO_IV');
+      if (!algorithm || !secretKeyString || !ivString) {
+        throw new InternalServerErrorException(
+          'Encryption configuration is missing',
+        );
+      }
+      const secretKey = Buffer.from(secretKeyString, 'hex');
+      const iv = Buffer.from(ivString, 'hex');
+      const decipherGroq = createDecipheriv(algorithm, secretKey, iv);
+      let decryptedGroqAPI =
+        decipherGroq.update(user.groqApi, 'hex', 'utf8') +
+        decipherGroq.final('utf8');
+      const decipherJina = createDecipheriv(algorithm, secretKey, iv);
+      let decryptedJinaAPI =
+        decipherJina.update(user.jinaApi, 'hex', 'utf8') +
+        decipherJina.final('utf8');
       // check whether project exist with same name
       const userProjects = await this.projectRepo.getProjectByName(
         userId,
@@ -110,11 +133,14 @@ export class ProjectsService {
         'public',
         'node_modules',
       ]);
-      await this.EmbeddingService.generateEmbeddingsData(textFile);
+      // await this.EmbeddingService.generateEmbeddingsData(textFile);
 
       // create the embeddings
       const [texts, embedds] =
-        await this.EmbeddingService.generateEmbeddingsData(textFile);
+        await this.EmbeddingService.generateEmbeddingsData(
+          textFile,
+          decryptedJinaAPI,
+        );
 
       // fetch repo languages
       const languages: Record<string, number> = await axios

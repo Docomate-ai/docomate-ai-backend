@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { createDecipheriv } from 'crypto';
 import { Response } from 'express';
 import { EmbeddingsService } from 'src/ai/embeddings.service';
 import { ProjectsRepository } from 'src/projects/projects.repository';
@@ -15,6 +16,7 @@ import { ContentRepository } from './content.repository';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import * as fs from 'fs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ContentService {
@@ -26,6 +28,7 @@ export class ContentService {
     private groqService: GroqService,
     private embeddingService: EmbeddingsService,
     private contentRepos: ContentRepository,
+    private configService: ConfigService,
   ) {}
 
   async getReadmeSections() {
@@ -73,6 +76,27 @@ export class ContentService {
     }
 
     try {
+      // decrypt the api keys
+      // secrets to decrypt api keys
+      const algorithm = this.configService.get<string>('CRYPTO_ALGORITHM');
+      const secretKeyString =
+        this.configService.get<string>('CRYPTO_SECRET_KEY');
+      const ivString = this.configService.get<string>('CRYPTO_IV');
+      if (!algorithm || !secretKeyString || !ivString) {
+        throw new InternalServerErrorException(
+          'Encryption configuration is missing',
+        );
+      }
+      const secretKey = Buffer.from(secretKeyString, 'hex');
+      const iv = Buffer.from(ivString, 'hex');
+      const decipherGroq = createDecipheriv(algorithm, secretKey, iv);
+      let decryptedGroqAPI =
+        decipherGroq.update(user.groqApi, 'hex', 'utf8') +
+        decipherGroq.final('utf8');
+      const decipherJina = createDecipheriv(algorithm, secretKey, iv);
+      let decryptedJinaAPI =
+        decipherJina.update(user.jinaApi, 'hex', 'utf8') +
+        decipherJina.final('utf8');
       // retrieve query-strings and prompts for each section
       const requiredSections = sectionQueries.filter((section) =>
         sections.includes(section.section),
@@ -83,7 +107,10 @@ export class ContentService {
       const prompts = requiredSections.map((section) => section.prompt);
       // generate embedding for each query-string
       const queryStringsEmbeddingsResponse =
-        await this.embeddingService.JINA_GenerateEmbeddings(queryStrings);
+        await this.embeddingService.JINA_GenerateEmbeddings(
+          queryStrings,
+          decryptedJinaAPI,
+        );
       const queryStringsEmbeddings =
         queryStringsEmbeddingsResponse.data.data.map(
           (obj: any) => obj.embedding,
@@ -119,6 +146,7 @@ export class ContentService {
             system,
             section.prompt,
             contexts[index],
+            decryptedGroqAPI,
           );
         }),
       );

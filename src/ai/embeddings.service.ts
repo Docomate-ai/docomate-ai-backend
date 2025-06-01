@@ -7,10 +7,8 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 @Injectable()
 export class EmbeddingsService {
   private token: string | undefined;
-  private jinaApi: string | undefined;
   constructor(private configService: ConfigService) {
     this.token = this.configService.get<string>('HF_TOKEN');
-    this.jinaApi = this.configService.get<string>('JINA_API');
   }
 
   async HF_GenerateEmbeddings(data: string) {
@@ -24,7 +22,7 @@ export class EmbeddingsService {
     return embeddings;
   }
 
-  async JINA_GenerateEmbeddings(data: string[]) {
+  async JINA_GenerateEmbeddings(data: string[], jinaApi: string) {
     const embeddings = await axios.post(
       'https://api.jina.ai/v1/embeddings',
       {
@@ -33,7 +31,7 @@ export class EmbeddingsService {
       },
       {
         headers: {
-          Authorization: `Bearer ${this.jinaApi}`,
+          Authorization: `Bearer ${jinaApi}`,
         },
       },
     );
@@ -52,7 +50,7 @@ export class EmbeddingsService {
     return output;
   }
 
-  async generateEmbeddingsData(data: string) {
+  async generateEmbeddingsData(data: string, jinaApi: string) {
     const splittedData = await this.splitData(data);
     /**
     // ### Below is the implementation with HuggingFace BaaI embedding model
@@ -65,7 +63,7 @@ export class EmbeddingsService {
     */
 
     // ### Below is the implementation with Jina embedding model
-    const jinaRes = await this.JINA_GenerateEmbeddings(splittedData);
+    const jinaRes = await this.JINA_GenerateEmbeddings(splittedData, jinaApi);
     const embeddings = jinaRes.data.data.map((obj: any) => obj.embedding);
     return [splittedData, embeddings];
   }

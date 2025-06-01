@@ -2,149 +2,149 @@ const sectionQueries = [
   {
     section: 'OVERVIEW',
     queryString:
-      '(text contains a comprehensive description of what the project is about, including its main goals, high-level functionality, and vision, often found in README or introductory sections)',
+      'README introduction about description purpose goals overview project summary what is vision objectives main functionality',
     prompt:
-      'Analyze the provided chunks to extract a detailed and comprehensive overview of the project. Describe the primary purpose, major functionalities, key objectives, and overall vision of the project, ensuring that the explanation is accessible to both technical and non-technical users.',
+      "Extract a comprehensive project overview by analyzing README files, introduction sections, and project descriptions. Focus on the project's core purpose, main objectives, key functionalities, target audience, and overall vision. Include any problem statements the project addresses and its unique value proposition. Present this in a way that's accessible to both technical and non-technical audiences.",
   },
   {
     section: 'INSTALLATION',
     queryString:
-      '(instructions that explain how to install the software, including setting up dependencies, preparing the environment, and running initial setup commands)',
+      'install setup requirements dependencies npm pip composer yarn brew apt-get docker getting started prerequisites environment setup',
     prompt:
-      'Extract and elaborate on the installation instructions by gathering information from relevant files and documentation. Detail all prerequisites, dependency steps, environment setups, and specific commands (e.g., from package.json, requirements.txt, or setup scripts) to ensure users can install the project smoothly.',
+      'Compile detailed installation instructions by examining package.json, requirements.txt, Dockerfile, setup scripts, and installation documentation. Include system requirements, prerequisite software, step-by-step installation commands, environment setup, dependency installation, and post-installation verification steps. Address common installation issues and provide platform-specific instructions where applicable.',
   },
   {
     section: 'USAGE',
     queryString:
-      '(step-by-step guidance or instructions on how to execute or use the project, including command line examples and expected outputs)',
+      'usage examples commands CLI API how to use run execute demo tutorial quickstart getting started basic usage',
     prompt:
-      'Review the repository content to collate usage instructions and examples. Provide a clear, step-by-step guide on how to run the project, including practical command line examples, configuration options, and explanations of expected output to assist users in effectively using the software.',
+      'Create comprehensive usage documentation by analyzing code examples, CLI commands, API calls, demo files, and tutorial content. Provide step-by-step usage instructions, practical examples with expected outputs, configuration options, command-line parameters, and common use cases. Include both basic and advanced usage scenarios with clear explanations.',
   },
   {
     section: 'TECH-STACK',
     queryString:
-      '(a list or description of the technologies, programming languages, frameworks, libraries, or tools used to develop and run the project)',
+      'technology stack framework library language dependencies tools built with powered by uses requires Python JavaScript React Node.js',
     prompt:
-      "Gather and synthesize information about the technologies used throughout the project. Describe the programming languages, frameworks, libraries, build tools, and any ancillary software (e.g., Docker or CI/CD pipelines) that are used to build and run the project, ensuring a complete picture of the project's technical architecture.",
+      'Identify and document the complete technology stack by examining package files, import statements, configuration files, and documentation. Detail programming languages, frameworks, libraries, databases, build tools, deployment platforms, and development tools. Explain the role of each technology and why it was chosen for the project architecture.',
   },
   {
     section: 'FEATURES',
     queryString:
-      '(detailed listing of what the project can do, including its main functionalities, modules, and capabilities, usually in the form of a feature list)',
+      'features functionality capabilities what it does key features highlights benefits core features advanced features modules components',
     prompt:
-      'From the repository documentation and source files, extract a list of key features and functionalities. Provide detailed descriptions of each feature, including its purpose, benefits, and potential use cases. Ensure that both core capabilities and advanced functionalities are clearly highlighted.',
+      "Extract and organize all project features by analyzing documentation, code comments, feature lists, and functionality descriptions. Categorize features into core and advanced capabilities, explain each feature's purpose and benefits, provide use case examples, and highlight unique or innovative aspects that differentiate the project.",
   },
   {
     section: 'CONTRIBUTING',
     queryString:
-      '(step-by-step guide on how others can contribute to the project, including development guidelines, submission process, and collaboration practices)',
+      'contributing contribution guide guidelines pull request code style development workflow collaboration how to contribute',
     prompt:
-      "Compile and refine the contribution guidelines from the project's documentation. Describe the process for contributing, including code style guidelines, branch management, testing requirements, and instructions for submitting pull requests. Emphasize how contributors can get started and collaborate effectively on the project.",
+      'Compile comprehensive contribution guidelines from CONTRIBUTING.md, development documentation, and project guidelines. Include the contribution process, code style requirements, branch management, testing procedures, pull request guidelines, issue reporting, development setup for contributors, and community standards.',
   },
   {
     section: 'LICENSE',
     queryString:
-      '(detailed explanation or reference to the type of software license the project uses, including any usage restrictions and permissions)',
+      'license licensing MIT Apache GPL BSD copyright terms conditions permissions restrictions legal usage rights',
     prompt:
-      "Review the repository for licensing information to generate a clear explanation of the project's license. Provide detailed context on the type of license used, permissions granted, restrictions imposed, and any conditions that users or contributors should be aware of, ensuring the license's implications are clearly communicated.",
+      'Document licensing information by examining LICENSE files, package.json license fields, and copyright notices. Explain the license type, permissions granted, restrictions imposed, attribution requirements, and implications for users and contributors. Provide guidance on license compliance and usage rights.',
   },
   {
     section: 'ENVIRONMENT VARIABLES',
     queryString:
-      '(list and explanation of the environment-specific variables that need to be defined for proper functioning of the project, usually found in .env files)',
+      'environment variables env config .env configuration settings API keys secrets database URL port host',
     prompt:
-      'Identify and describe the environment variables essential to the project’s operation. Provide specific details including variable names, expected values, and their impact on functionality. Incorporate any notes from .env files, documentation, or setup scripts to explain how these variables can be configured for different environments.',
+      'Identify and document all environment variables by analyzing .env files, configuration documentation, and code references. For each variable, provide the name, purpose, expected format, default values, required vs optional status, and security considerations. Include setup instructions for different environments.',
   },
   {
     section: 'CONFIGURATION',
     queryString:
-      '(instructions or files related to customizing or setting up the application’s behavior, such as config files and documentation references)',
+      'configuration config settings options parameters customization setup modify behavior environment production development',
     prompt:
-      'Extract information from configuration files and documentation to construct a detailed guide on project configuration. Explain the role of each configuration parameter, how it affects system behavior, and the steps required to adjust settings for various environments (development, staging, production).',
+      'Document configuration options by examining config files, settings documentation, and configuration schemas. Explain each configuration parameter, its effect on system behavior, valid values, default settings, and environment-specific configurations. Provide examples for common configuration scenarios.',
   },
   {
     section: 'FOLDER STRUCTURE',
     queryString:
-      '(description of how the project’s files and folders are organized, often represented in a tree format or layout overview)',
+      'folder structure directory organization architecture layout files directories tree project structure src lib components',
     prompt:
-      'Analyze the project’s file organization to generate a comprehensive overview of its folder structure. Detail the main directories and key files, explain the purpose of each segment, and illustrate how the overall structure supports the project’s modularity and maintainability.',
+      "Analyze and document the project's folder structure by examining the directory hierarchy and file organization. Explain the purpose of each major directory, key files, naming conventions, and how the structure supports project modularity and maintainability. Include any architectural patterns reflected in the organization.",
   },
   {
     section: 'DEPENDENCIES',
     queryString:
-      '(detailed listing of external libraries, packages, or modules the project relies on, often listed in dependency files like package.json or requirements.txt)',
+      'dependencies packages libraries modules requirements package.json requirements.txt composer.json external libraries third-party',
     prompt:
-      'Review dependency declarations within common files like package.json, requirements.txt, or composer.json. Provide a detailed list of external libraries and tools used in the project along with explanations of their roles, version constraints, and any specific configuration or setup details necessary for the dependencies.',
+      'Document all project dependencies by analyzing package.json, requirements.txt, composer.json, and other dependency files. Categorize dependencies into production, development, and optional, explain their purposes, version constraints, and any special installation or configuration requirements.',
   },
   {
     section: 'DATABASE SCHEMA',
     queryString:
-      '(any SQL schema, ER diagrams, or structured data models that explain how the project organizes and stores data)',
+      'database schema SQL tables models migrations relationships ER diagram data structure entities database design',
     prompt:
-      'Extract and organize information detailing the project’s database schema. Describe the structure of database tables, relationships, and design principles. Include references to any migration scripts, ER diagrams, or SQL schema files to give users a clear understanding of how data is organized.',
+      "Document the database structure by examining schema files, migration scripts, model definitions, and database documentation. Describe table structures, relationships, constraints, indexes, and data flow. Include any database design principles and explain how the schema supports the application's data requirements.",
   },
   {
     section: 'API DOCUMENTATION',
     queryString:
-      '(complete documentation about the API including endpoint routes, input parameters, output formats, authentication, and usage examples)',
+      'API documentation endpoints routes REST GraphQL authentication parameters responses examples Swagger OpenAPI',
     prompt:
-      'Gather detailed descriptions from files containing API documentation. Provide a comprehensive summary of available endpoints, including request parameters, response structures, authentication mechanisms, and usage examples. Ensure the generated documentation is sufficiently detailed to guide developers in integrating with the API.',
+      'Compile comprehensive API documentation by analyzing API route definitions, Swagger/OpenAPI specs, and endpoint documentation. Document all endpoints with their HTTP methods, parameters, request/response formats, authentication requirements, error codes, and practical usage examples.',
   },
   {
     section: 'DEPLOYMENT',
     queryString:
-      '(step-by-step instructions or scripts that explain how to deploy the project to servers, containers, or cloud platforms including CI/CD configurations)',
+      'deployment deploy hosting cloud Docker Kubernetes CI/CD pipeline production build release server infrastructure',
     prompt:
-      'Using information from deployment scripts and configuration files, describe the complete deployment process. Explain the steps required to set up, configure, and deploy the project on various platforms or containers. Include details on continuous integration/continuous deployment pipelines, if available, to assist users in replicating the deployment process.',
+      'Document the deployment process by examining deployment scripts, CI/CD configurations, Docker files, and hosting documentation. Provide step-by-step deployment instructions for different environments, infrastructure requirements, scaling considerations, and continuous deployment setup.',
   },
   {
     section: 'SCREENSHOTS',
     queryString:
-      '(visual assets or image-based examples that showcase the user interface or features of the project, including GIFs and annotated screenshots)',
+      'screenshots images demo UI interface visual examples gallery preview mockups wireframes user interface',
     prompt:
-      'Search for references to images and demo media within the project documentation. Assemble a detailed description that explains the context and purpose of each visual asset, including how they demonstrate the project’s user interface, functionality, or unique features.',
+      "Document visual assets by identifying screenshots, demo images, UI previews, and visual documentation. Describe what each image demonstrates, the context in which it's relevant, and how it showcases the project's features or user interface. Include captions and explanations for better understanding.",
   },
   {
     section: 'ROADMAP',
     queryString:
-      '(plans or outlines detailing the upcoming features, goals, or milestones that define the project’s future direction)',
+      'roadmap future plans upcoming features milestones TODO changelog version planning development timeline goals',
     prompt:
-      'Extract the project’s future plans and roadmap details from planning documents and TODO lists. Provide a thorough overview of upcoming features, strategic milestones, and long-term goals. Explain how these future developments will enhance the project and guide its evolution over time.',
+      "Extract future development plans by analyzing roadmap documents, TODO lists, issue trackers, and changelog entries. Organize planned features by priority or timeline, explain strategic goals, upcoming milestones, and how future developments will enhance the project's capabilities.",
   },
   {
     section: 'FAQ',
     queryString:
-      '(sections answering common questions or solving frequently encountered issues by users, often presented as a list of questions and answers)',
+      'FAQ frequently asked questions troubleshooting common issues problems solutions help support Q&A',
     prompt:
-      'Compile and detail a comprehensive FAQ section by gathering common queries and issues documented within the repository. For each frequently asked question, provide an in-depth answer or troubleshooting step designed to help users quickly resolve problems and better understand the project.',
+      'Compile frequently asked questions by analyzing FAQ sections, issue trackers, support documentation, and common user queries. Provide comprehensive answers to each question, including troubleshooting steps, explanations, and links to relevant documentation or resources.',
   },
   {
     section: 'ACKNOWLEDGEMENTS',
     queryString:
-      '(sections that thank individuals, contributors, or third-party resources for their help, support, or inspiration during project development)',
+      'acknowledgements credits thanks contributors inspiration acknowledgment attribution special thanks team members',
     prompt:
-      'Identify and compile a list of individuals, libraries, and external resources that have significantly contributed to the project’s development. Provide detailed acknowledgements that not only credit contributions but also explain the nature of the support and its impact on the project.',
+      "Document acknowledgements by identifying contributors, inspirations, and external resources mentioned in credits or acknowledgement sections. Explain each contribution's significance, provide proper attribution, and highlight the collaborative nature of the project's development.",
   },
   {
     section: 'SUPPORT',
     queryString:
-      '(information on how users can get help, contact the maintainers, or participate in community discussions for troubleshooting and issue resolution)',
+      'support help contact community forum discussion issue tracker bug report email chat assistance',
     prompt:
-      'Extract support-related information from documentation and contact references. Describe the available channels for user support, including contact email addresses, community forums, or live chat options. Provide guidelines on how to seek help or report issues effectively within the project.',
+      'Document support channels by examining contact information, community links, and support documentation. Provide clear instructions on how to get help, report issues, contact maintainers, and participate in community discussions. Include response time expectations and preferred communication methods.',
   },
   {
     section: 'PROJECT STATUS',
     queryString:
-      '(statements or badges indicating the current state of the project such as active development, deprecated, under maintenance, or release phase)',
+      'status active maintained deprecated stable beta alpha development phase release version lifecycle',
     prompt:
-      "Analyze the repository for indicators of the project's current status. Provide an in-depth status update that outlines whether the project is actively being developed, maintained, or has reached a stable/mature stage. Include any notes on current issues, release updates, or deprecation if applicable.",
+      "Determine project status by analyzing commit activity, release history, maintenance indicators, and status badges. Provide current development status, maintenance level, stability indicators, recent activity summary, and any deprecation notices or future plans affecting the project's lifecycle.",
   },
   {
     section: 'AUTHOR',
     queryString:
-      '(biographical or contact details about the individual or organization who built or maintains the project, including links to their profiles)',
+      'author maintainer creator developer team contact profile biography background experience social media',
     prompt:
-      'Compile detailed information about the project author or maintainer using references from profile and contact details. Present a clear biography, highlighting professional background, areas of expertise, and ways to connect via professional networks or social media channels.',
+      'Document author information by examining profile details, contact information, and contributor data. Provide background information about the main author or development team, their expertise, contact methods, and links to professional profiles or social media accounts.',
   },
 ];
 
